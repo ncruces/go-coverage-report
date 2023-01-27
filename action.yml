@@ -1,0 +1,38 @@
+name: 'Go coverage report'
+description: 'This action updates adds an HTML coverage report and SVG badge to your wiki'
+branding:
+  color: blue
+  icon: award
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 'stable'
+
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Checkout wiki
+      uses: actions/checkout@v3
+      with:
+        repository: ${{github.repository}}.wiki
+        path: ./.github/wiki/
+
+    - name: Generate coverage report
+      shell: bash
+      run: |
+        ${{ github.action_path }}/coverage.sh
+        mv ${{ github.action_path }}/coverage.svg ./.github/wiki/
+        mv ${{ github.action_path }}/coverage.html ./.github/wiki/
+
+    - name: Push to wiki
+      shell: bash
+      run: |
+        cd ./.github/wiki/
+        git config --local user.name "GitHub Action"
+        git config --local user.email "action@github.com"
+        git add coverage.svg coverage.html
+        git diff-index --quiet HEAD || git commit -m "Update coverage" && git push
