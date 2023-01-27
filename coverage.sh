@@ -39,16 +39,16 @@ echo "coverage: $COVERAGE% of statements"
 
 # Pick a color for the badge.
 COLOR=red
-if awk "BEGIN {exit !($COVERAGE >= 50)}"; then
-	COLOR=orange
-elif awk "BEGIN {exit !($COVERAGE >= 60)}"; then
-	COLOR=yellow
-elif awk "BEGIN {exit !($COVERAGE >= 70)}"; then
-	COLOR=yellowgreen
+if awk "BEGIN {exit !($COVERAGE >= 90)}"; then
+	COLOR=brightgreen
 elif awk "BEGIN {exit !($COVERAGE >= 80)}"; then
 	COLOR=green
-elif awk "BEGIN {exit !($COVERAGE >= 90)}"; then
-	COLOR=brightgreen
+elif awk "BEGIN {exit !($COVERAGE >= 70)}"; then
+	COLOR=yellowgreen
+elif awk "BEGIN {exit !($COVERAGE >= 60)}"; then
+	COLOR=yellow
+elif awk "BEGIN {exit !($COVERAGE >= 50)}"; then
+	COLOR=orange
 fi
 
 # Download the badge; store next to script.
