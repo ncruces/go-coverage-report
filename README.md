@@ -1,19 +1,20 @@
 # Go coverage report
 
-GitHub Action to add a coverage report and badge to your Go repo.
+A GitHub Action to add a coverage report and badge to your Go repo.
 
-Apply it to your repo by adding this step your one of your workflows:
+Apply it to your repo by adding this step to one of your workflows:
 
 ```yaml
     - name: Update coverage report
       uses: ncruces/go-coverage-report@main
 ```
 
-Your repo needs to have a Wiki for the Action to work,
+Your repo needs to have a Wiki for the action to work,
 and workflows need to have read _and_ write permissions to the repo.
 
-You should run this step _after_ your tests run (it will fail if tests fail),
-and only for _one platform_ (don't do it in a matrix), _e.g._:
+You should run this step _after_ your tests run
+(it will fail if tests fail, so might as well skip it),
+and only _once_ (don't run it in a matrix), _e.g._:
 
 ```yaml
     - name: Test
@@ -24,7 +25,7 @@ and only for _one platform_ (don't do it in a matrix), _e.g._:
       uses: ncruces/go-coverage-report@main
 ```
 
-This Action will generate an HTML report and SVG badge,
+This action will generate an HTML report and SVG badge,
 and save them as "hidden" files in your Wiki.
 
 You can then apply them to your `README.md` with this Markdown snippet:
