@@ -27,7 +27,7 @@ set -euo pipefail
 SCRIPT_DIR="$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}")")"
 
 # Get coverage for all packages in the current directory; store next to script.
-go test ./... -coverprofile "$SCRIPT_DIR/coverage.out"
+go test "${1:-./...}" -coverprofile "$SCRIPT_DIR/coverage.out"
 
 # Create an HTML report; store next to script.
 go tool cover -html="$SCRIPT_DIR/coverage.out" -o "$SCRIPT_DIR/coverage.html"
@@ -38,7 +38,6 @@ COVERAGE=$(go tool cover -func="$SCRIPT_DIR/coverage.out" | tail -1 | grep -Eo '
 echo "coverage: $COVERAGE% of statements"
 
 # Pick a color for the badge.
-COLOR=red
 if awk "BEGIN {exit !($COVERAGE >= 90)}"; then
 	COLOR=brightgreen
 elif awk "BEGIN {exit !($COVERAGE >= 80)}"; then
@@ -49,12 +48,14 @@ elif awk "BEGIN {exit !($COVERAGE >= 60)}"; then
 	COLOR=yellow
 elif awk "BEGIN {exit !($COVERAGE >= 50)}"; then
 	COLOR=orange
+else
+	COLOR=red
 fi
 
 # Download the badge; store next to script.
 curl -s "https://img.shields.io/badge/coverage-$COVERAGE%25-$COLOR" > "$SCRIPT_DIR/coverage.svg"
 
 # When running as a pre-commit hook, add the report and badge to the commit.
-if [[ -n ${GIT_INDEX_FILE-} ]]; then
+if [[ -n "${GIT_INDEX_FILE-}" ]]; then
 	git add "$SCRIPT_DIR/coverage.html" "$SCRIPT_DIR/coverage.svg"
 fi
