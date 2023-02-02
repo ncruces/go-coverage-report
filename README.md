@@ -12,17 +12,23 @@ Apply it to your repo by adding this step to one of your workflows:
 Your repo needs to have a Wiki for the action to work,
 and workflows need to have read _and_ write permissions to the repo.
 
-You should run this step _after_ your tests run
-(it will fail if tests fail, so might as well skip it),
-and only _once_ (don't run it in a matrix), _e.g._:
+Also, consider:
+- running this step _after_ your tests run
+  - the step fails if any tests fail, so you might as well skip it they do
+- running it only once
+  - use a condition to avoid repeated matrix runs
+- allowing it to fail without failing the entire job
+  - PRs lack permission to update the badge, nor do you want them to
+
 
 ```yaml
     - name: Test
       run: go test -v ./...
 
-    - if: matrix.os == 'ubuntu-latest'
-      name: Update coverage report
+    - name: Update coverage report
       uses: ncruces/go-coverage-report@main
+      if: matrix.os == 'ubuntu-latest'
+      continue-on-error: true
 ```
 
 This action will generate an HTML report and SVG badge,
