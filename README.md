@@ -5,8 +5,8 @@ A GitHub Action to add a coverage report and badge to your Go repo.
 Apply it to your repo by adding this step to one of your workflows:
 
 ```yaml
-    - name: Update coverage report
-      uses: ncruces/go-coverage-report@main
+- name: Update coverage report
+  uses: ncruces/go-coverage-report@main
 ```
 
 Your repo needs to have a Wiki for the action to work,
@@ -14,21 +14,26 @@ and workflows need to have read _and_ write permissions to the repo.
 
 Also, consider:
 - running this step _after_ your tests run
-  - the step fails if any tests fail, so you might as well skip it they do
+  - coverage will fail if any test fails, so you may as well skip it they do
 - running it only once
   - use a condition to avoid repeated matrix runs
+- skipping it for PRs
+  - PRs lack permission to update the badge, nor would you want them to
 - allowing it to fail without failing the entire job
-  - PRs lack permission to update the badge, nor do you want them to
+  - if tests pass, the problem might be with the badge itself, not your code
 
+Example:
 
 ```yaml
-    - name: Test
-      run: go test -v ./...
+- name: Test
+  run: go test -v ./...
 
-    - name: Update coverage report
-      uses: ncruces/go-coverage-report@main
-      if: matrix.os == 'ubuntu-latest'
-      continue-on-error: true
+- name: Update coverage report
+  uses: ncruces/go-coverage-report@main
+  if: |
+    matrix.os == 'ubuntu-latest' &&
+    github.event_name == 'push'  
+  continue-on-error: true
 ```
 
 This action will generate an HTML report and SVG badge,
