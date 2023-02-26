@@ -37,6 +37,8 @@ COVERAGE=$(go tool cover -func="$SCRIPT_DIR/coverage.out" | tail -1 | grep -Eo '
 
 echo "coverage: $COVERAGE% of statements"
 
+date "+%s,$COVERAGE" >> "$SCRIPT_DIR/coverage.log"
+
 # Pick a color for the badge.
 if awk "BEGIN {exit !($COVERAGE >= 90)}"; then
 	COLOR=brightgreen
