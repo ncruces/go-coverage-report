@@ -45,6 +45,20 @@ You can then apply them to your `README.md` with this Markdown snippet:
 [![Go Coverage](https://github.com/USER/REPO/wiki/coverage.svg)](https://raw.githack.com/wiki/USER/REPO/coverage.html)
 ```
 
+The action will also log to the Wiki the unix timestamp and coverage of every run.
+You can find this log at the following URL:
+
+```
+https://github.com/USER/REPO/wiki/coverage.log
+```
+
+You can get a pretty chart of the last few runs at the following URL:
+
+```
+https://go-coverage-report.nunocruces.workers.dev/chart/USER/REPO
+```
+
+
 ## Use manually or as a pre-commit hook
 
 The [script](coverage.sh) can also be run manually, or as a [pre-commit hook](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks).
@@ -55,3 +69,4 @@ The [script](coverage.sh) can also be run manually, or as a [pre-commit hook](ht
 - [@Prounckk](https://github.com/Prounckk) for the [blog](https://eremeev.ca/posts/golang-test-coverage-github-action/) that prompted this solution
 - [raw.githack.com](https://raw.githack.com/) for proxying the HTML report
 - [shields.io](https://shields.io/) for SVG badge generation
+- [quickchart.io](https://quickchart.io/) for SVG charts
