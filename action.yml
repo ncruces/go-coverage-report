@@ -4,6 +4,14 @@ branding:
   color: blue
   icon: award
 
+inputs:
+  report:
+    description: Generate an HTML coverage report.
+    default: true
+  chart:
+    description: Generate a coverage over time chart.
+    default: false
+
 runs:
   using: "composite"
   steps:
@@ -23,18 +31,22 @@ runs:
 
     - name: Generate coverage report
       shell: bash
+      env:
+        INPUT_CHART:  ${{ inputs.chart }}
+        INPUT_REPORT: ${{ inputs.report }}
       run: |
-        ${{ github.action_path }}/coverage.sh
-        mv ${{ github.action_path }}/coverage.svg ./.github/wiki/
-        mv ${{ github.action_path }}/coverage.html ./.github/wiki/
-        cat ${{ github.action_path }}/coverage.log >> ./.github/wiki/coverage.log
+        ${{github.action_path}}/coverage.sh
+        mv ${{github.action_path}}/coverage.svg ./.github/wiki/
+        test ! -f ${{github.action_path}}/coverage.html || mv ${{github.action_path}}/coverage.html ./.github/wiki/
+        test ! -f ${{github.action_path}}/coverage-chart.svg || mv ${{github.action_path}}/coverage-chart.svg ./.github/wiki/
+        cat ${{github.action_path}}/coverage.log >> ./.github/wiki/coverage.log
         sort -u -o ./.github/wiki/coverage.log ./.github/wiki/coverage.log
 
     - name: Push to wiki
       shell: bash
       run: |
         cd ./.github/wiki/
+        git add --all
         git config --local user.name "GitHub Action"
         git config --local user.email "action@github.com"
-        git add coverage.svg coverage.log coverage.html
         git diff-index --quiet HEAD || git commit -m "Update coverage" && git push

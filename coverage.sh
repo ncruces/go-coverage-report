@@ -29,8 +29,10 @@ SCRIPT_DIR="$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}")")"
 # Get coverage for all packages in the current directory; store next to script.
 go test ./... -coverpkg "$(go list)/..." -coverprofile "$SCRIPT_DIR/coverage.out"
 
-# Create an HTML report; store next to script.
-go tool cover -html="$SCRIPT_DIR/coverage.out" -o "$SCRIPT_DIR/coverage.html"
+if [[ "${INPUT_REPORT-true}" == "true" ]]; then
+	# Create an HTML report; store next to script.
+	go tool cover -html="$SCRIPT_DIR/coverage.out" -o "$SCRIPT_DIR/coverage.html"
+fi
 
 # Extract total coverage: the decimal number from the last line of the function report.
 COVERAGE=$(go tool cover -func="$SCRIPT_DIR/coverage.out" | tail -1 | grep -Eo '[0-9]+\.[0-9]')
@@ -56,6 +58,11 @@ fi
 
 # Download the badge; store next to script.
 curl -s "https://img.shields.io/badge/coverage-$COVERAGE%25-$COLOR" > "$SCRIPT_DIR/coverage.svg"
+
+if [[ "${INPUT_CHART-false}" == "true" ]]; then
+	# Download the chart; store next to script.
+	curl -s "https://go-coverage-report.nunocruces.workers.dev/chart/$GITHUB_REPOSITORY" > "$SCRIPT_DIR/coverage-chart.svg"
+fi
 
 # When running as a pre-commit hook, add the report and badge to the commit.
 if [[ -n "${GIT_INDEX_FILE-}" ]]; then
