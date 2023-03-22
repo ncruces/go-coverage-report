@@ -11,6 +11,9 @@ inputs:
   chart:
     description: Generate a coverage over time chart.
     default: false
+  amend:
+    description: Amend wiki, avoiding spurious commits.
+    default: false
 
 runs:
   using: "composite"
@@ -32,8 +35,8 @@ runs:
     - name: Generate coverage report
       shell: bash
       env:
-        INPUT_CHART:  ${{ inputs.chart }}
-        INPUT_REPORT: ${{ inputs.report }}
+        INPUT_CHART:  ${{inputs.chart}}
+        INPUT_REPORT: ${{inputs.report}}
       run: |
         ${{github.action_path}}/coverage.sh
         mv ${{github.action_path}}/coverage.svg ./.github/wiki/
@@ -47,6 +50,8 @@ runs:
       run: |
         cd ./.github/wiki/
         git add --all
+        git diff-index --quiet HEAD && exit
         git config --local user.name "GitHub Action"
         git config --local user.email "action@github.com"
-        git diff-index --quiet HEAD || git commit -m "Update coverage" && git push
+        test ${{inputs.amend}} != "true" && git commit -m "Update coverage" && git push
+        test ${{inputs.amend}} == "true" && git commit --amend --no-edit && git push --force-with-lease
