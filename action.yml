@@ -54,4 +54,4 @@ runs:
         git config --local user.name "GitHub Action"
         git config --local user.email "action@github.com"
         test ${{inputs.amend}} != "true" && git commit -m "Update coverage" && git push
-        test ${{inputs.amend}} == "true" && git commit --amend --no-edit && git push --force-with-lease
+        test ${{inputs.amend}} == "true" && git commit --amend --no-edit && git push --force-with-lease || :
