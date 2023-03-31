@@ -1,63 +1,74 @@
 # Go coverage report
 
-A GitHub Action to add a coverage report and badge to your Go repo.
+A GitHub Action to add a coverage [report][1], [badge][2], and [chart][4] to your Go repo.
 
 Apply it to your repo by adding this step to one of your workflows:
 
 ```yaml
 - name: Update coverage report
-  uses: ncruces/go-coverage-report@main
+  uses: ncruces/go-coverage-report@v0
 ```
 
 Your repo needs to have a Wiki for the action to work,
 and workflows need to have read _and_ write permissions to the repo.
 
+The action has 3 configuration knobs:
+- `report`: default `true`, whether to generate an
+  [HTML coverage report][1].
+- `chart`: default `false`, whether to generate an
+  [SVG coverage chart][4].
+- `amend`: default `false`, whether to amend your Wiki,
+  avoiding a series of “Update coverage” commits.
+
 Also, consider:
 - running this step _after_ your tests run
-  - coverage will fail if any test fails, so you may as well skip it they do
-- running it only once
+  - coverage will fail if any test fails, so you may skip it if they fail
+- running it only once per commit
   - use a condition to avoid repeated matrix runs
 - skipping it for PRs
   - PRs lack permission to update the badge, nor would you want them to
 - allowing it to fail without failing the entire job
   - if tests pass, the problem might be with the badge itself, not your code
 
-Example:
+Complete example:
 
 ```yaml
 - name: Test
   run: go test -v ./...
 
 - name: Update coverage report
-  uses: ncruces/go-coverage-report@main
+  uses: ncruces/go-coverage-report@v0
+  with:
+    report: 'true'
+    chart: 'true'
+    amend: 'false'
   if: |
     matrix.os == 'ubuntu-latest' &&
     github.event_name == 'push'  
   continue-on-error: true
 ```
 
-This action will generate an HTML report and SVG badge,
-and save them as "hidden" files in your Wiki.
+The action generates an [HTML report][1], [SVG badge][2] and [chart][4],
+and saves them as “hidden” files in your Wiki.
 
-You can then apply them to your `README.md` with this Markdown snippet:
+To add a coverage badge to your `README.md`, use this Markdown snippet:
 
 ```markdown
 [![Go Coverage](https://github.com/USER/REPO/wiki/coverage.svg)](https://raw.githack.com/wiki/USER/REPO/coverage.html)
 ```
 
-The action will also log to the Wiki the unix timestamp and coverage of every run.
-You can find this log at the following URL:
+Clicking on the badge opens the [coverage report][1].
+If you also want to show the [coverage chart][4],
+create a [Wiki page][5] to display both.
 
-```
-https://github.com/USER/REPO/wiki/coverage.log
-```
+The action will also [log][3] to the Wiki the unix timestamp and coverage of every run,
+which it uses to generate the [coverage chart][4].
 
-You can get a pretty chart of the last few runs at the following URL:
-
-```
-https://go-coverage-report.nunocruces.workers.dev/chart/USER/REPO
-```
-
+[1]: https://raw.githack.com/wiki/ncruces/go-sqlite3/coverage.html
+[2]: https://github.com/ncruces/go-sqlite3/wiki/coverage.svg
+[3]: https://github.com/ncruces/go-sqlite3/wiki/coverage.log
+[4]: https://github.com/ncruces/go-sqlite3/wiki/coverage-chart.svg
+[5]: https://github.com/ncruces/go-sqlite3/wiki/Test-coverage-report
 
 ## Use manually or as a pre-commit hook
 
