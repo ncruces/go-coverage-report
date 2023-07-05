@@ -38,12 +38,7 @@ runs:
         INPUT_CHART:  ${{inputs.chart}}
         INPUT_REPORT: ${{inputs.report}}
       run: |
-        ${{github.action_path}}/coverage.sh
-        mv ${{github.action_path}}/coverage.svg ./.github/wiki/
-        test ! -f ${{github.action_path}}/coverage.html || mv ${{github.action_path}}/coverage.html ./.github/wiki/
-        test ! -f ${{github.action_path}}/coverage-chart.svg || mv ${{github.action_path}}/coverage-chart.svg ./.github/wiki/
-        cat ${{github.action_path}}/coverage.log >> ./.github/wiki/coverage.log
-        sort -u -o ./.github/wiki/coverage.log ./.github/wiki/coverage.log
+        ${{github.action_path}}/coverage.sh ./.github/wiki/
 
     - name: Push to wiki
       shell: bash

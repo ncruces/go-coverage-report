@@ -26,20 +26,24 @@ set -euo pipefail
 # Get the script's directory after resolving a possible symlink.
 SCRIPT_DIR="$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}")")"
 
+OUT_DIR="${1-$SCRIPT_DIR}"
+OUT_FILE="$(mktemp)"
+
 # Get coverage for all packages in the current directory; store next to script.
-go test ./... -coverpkg "$(go list)/..." -coverprofile "$SCRIPT_DIR/coverage.out"
+go test ./... -coverpkg "$(go list)/..." -coverprofile "$OUT_FILE"
 
 if [[ "${INPUT_REPORT-true}" == "true" ]]; then
 	# Create an HTML report; store next to script.
-	go tool cover -html="$SCRIPT_DIR/coverage.out" -o "$SCRIPT_DIR/coverage.html"
+	go tool cover -html="$OUT_FILE" -o "$OUT_DIR/coverage.html"
 fi
 
 # Extract total coverage: the decimal number from the last line of the function report.
-COVERAGE=$(go tool cover -func="$SCRIPT_DIR/coverage.out" | tail -1 | grep -Eo '[0-9]+\.[0-9]')
+COVERAGE=$(go tool cover -func="$OUT_FILE" | tail -1 | grep -Eo '[0-9]+\.[0-9]')
 
 echo "coverage: $COVERAGE% of statements"
 
-date "+%s,$COVERAGE" >> "$SCRIPT_DIR/coverage.log"
+date "+%s,$COVERAGE" >> "$OUT_DIR/coverage.log"
+sort -u -o "$OUT_DIR/coverage.log" "$OUT_DIR/coverage.log"
 
 # Pick a color for the badge.
 if awk "BEGIN {exit !($COVERAGE >= 90)}"; then
@@ -57,14 +61,16 @@ else
 fi
 
 # Download the badge; store next to script.
-curl -s "https://img.shields.io/badge/coverage-$COVERAGE%25-$COLOR" > "$SCRIPT_DIR/coverage.svg"
+curl -s "https://img.shields.io/badge/coverage-$COVERAGE%25-$COLOR" > "$OUT_DIR/coverage.svg"
 
 if [[ "${INPUT_CHART-false}" == "true" ]]; then
 	# Download the chart; store next to script.
-	curl -s "https://go-coverage-report.nunocruces.workers.dev/chart/$GITHUB_REPOSITORY" > "$SCRIPT_DIR/coverage-chart.svg"
+	curl -s -H "Content-Type: text/plain" --data-binary "@$OUT_DIR/coverage.log" \
+		https://go-coverage-report.nunocruces.workers.dev/chart/ > \
+		"$OUT_DIR/coverage-chart.svg" 
 fi
 
 # When running as a pre-commit hook, add the report and badge to the commit.
 if [[ -n "${GIT_INDEX_FILE-}" ]]; then
-	git add "$SCRIPT_DIR/coverage.html" "$SCRIPT_DIR/coverage.svg"
+	git add "$OUT_DIR/coverage.html" "$OUT_DIR/coverage.svg"
 fi
