@@ -14,6 +14,9 @@ inputs:
   amend:
     description: Amend wiki, avoiding spurious commits.
     default: false
+  go-version:
+    description: The Go version to download (if necessary) and use.
+    default: stable
 
 runs:
   using: "composite"
@@ -21,16 +24,16 @@ runs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Set up Go
-      uses: actions/setup-go@v4
-      with:
-        go-version: stable
-
     - name: Checkout wiki
       uses: actions/checkout@v3
       with:
         repository: ${{github.repository}}.wiki
         path: ./.github/wiki/
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: ${{inputs.go-version}}
 
     - name: Generate coverage report
       shell: bash
@@ -46,8 +49,8 @@ runs:
         cd ./.github/wiki/
         git add --all
         git diff-index --quiet HEAD && exit
-        git config --local user.name "GitHub Action"
+        git config --local user.name  "GitHub Action"
         git config --local user.email "action@github.com"
         test ${{inputs.amend}} == "true" && \
-          git commit --amend --no-edit && git push --force-with-lease || \
-          git commit -m "Update coverage" && git push
+          git commit --amend --no-edit   && git push --force-with-lease || \
+          git commit -m"Update coverage" && git push
