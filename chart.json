@@ -1,0 +1,45 @@
+{
+  "type": "line",
+  "data": {
+    "labels": [],
+    "datasets": [
+      {
+        "data": [],
+        "fill": false,
+        "borderColor": "__GRADIENT__",
+        "borderWidth": 5,
+        "pointRadius": 0
+      }
+    ]
+  },
+  "options": {
+    "legend": {
+      "display": false
+    },
+    "scales": {
+      "xAxes": [
+        {
+          "type": "time",
+          "distribution": "series",
+          "gridLines": {
+            "display": false
+          },
+          "time": {
+            "unit": "day"
+          }
+        }
+      ],
+      "yAxes": [
+        {
+          "gridLines": {
+            "display": false
+          },
+          "ticks": {
+            "suggestedMin": 50,
+            "suggestedMax": 100
+          }
+        }
+      ]
+    }
+  }
+}

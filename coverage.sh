@@ -1,17 +1,18 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 INPUT="${INPUT_COVERAGE-}"
 OUTPUT="$1"
 
+# Get coverage for all packages in the current directory.
 if [ -z $INPUT ]; then
-	# Get coverage for all packages in the current directory.
 	INPUT=$(mktemp)
 	go test ./... -coverpkg "$(go list)/..." -coverprofile "$INPUT"
 fi
 
+# Create an HTML report.
 if [[ "${INPUT_REPORT-true}" == "true" ]]; then
-	# Create an HTML report.
 	go tool cover -html="$INPUT" -o "$OUTPUT/coverage.html"
 fi
 
@@ -38,12 +39,17 @@ else
 	COLOR=red
 fi
 
-# Download the badge; store next to script.
+# Download the badge.
 curl -s "https://img.shields.io/badge/coverage-$COVERAGE%25-$COLOR" > "$OUTPUT/coverage.svg"
 
+# Download the chart.
 if [[ "${INPUT_CHART-false}" == "true" ]]; then
-	# Download the chart; store next to script.
-	curl -s -H "Content-Type: text/plain" --data-binary "@$OUTPUT/coverage.log" \
-		https://go-coverage-report.nunocruces.workers.dev/chart/ > \
-		"$OUTPUT/coverage-chart.svg" 
+	GRADIENT='getGradientFillHelper("vertical",["#44CC11","#97CA00","#A4A61D","#DFB317","#FE7D37","#E05D44"])'
+
+	jq -csf "$DIR/chart.jq" "$DIR/chart.json" <(
+		tail -n 20 "$OUTPUT/coverage.log" | sed 's/.*/[&]/' | jq -s '.|transpose'
+	) |
+	sed s/\"__GRADIENT__\"/$GRADIENT/ |
+	jq -csR '{format:"svg", chart:.}' |
+	curl -sd @- -X POST -H 'Content-Type: application/json' https://quickchart.io/chart > "$OUTPUT/coverage-chart.svg"
 fi
