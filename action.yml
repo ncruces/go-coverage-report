@@ -5,6 +5,8 @@ branding:
   icon: award
 
 inputs:
+  coverage-file:
+    description: Coverage input file. By default, coverage for all packages in the current directory is generated.
   report:
     description: Generate an HTML coverage report.
     default: true
@@ -37,8 +39,9 @@ runs:
     - name: Generate coverage report
       shell: bash
       env:
-        INPUT_CHART:  ${{inputs.chart}}
-        INPUT_REPORT: ${{inputs.report}}
+        INPUT_COVERAGE: ${{inputs.coverage-file}}
+        INPUT_REPORT:   ${{inputs.report}}
+        INPUT_CHART:    ${{inputs.chart}}
       run: |
         ${{github.action_path}}/coverage.sh ./.github/wiki/
 

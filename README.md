@@ -70,10 +70,6 @@ which it uses to generate the [coverage chart][4].
 [4]: https://github.com/ncruces/go-sqlite3/wiki/coverage-chart.svg
 [5]: https://github.com/ncruces/go-sqlite3/wiki/Test-coverage-report
 
-## Use manually or as a pre-commit hook
-
-The [script](coverage.sh) can also be run manually, or as a [pre-commit hook](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks).
-
 ## Credits
 
 - [@vieux](https://github.com/vieux/) for [gocover.io](https://github.com/vieux/gocover.io) which I've used for years before creating this
