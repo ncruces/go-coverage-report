@@ -6,7 +6,7 @@ branding:
 
 inputs:
   coverage-file:
-    description: Coverage input file. By default, coverage for all packages in the current directory is generated.
+    description: Coverage input file. By default, generate coverage for all packages in the current module.
   report:
     description: Generate an HTML coverage report.
     default: true
@@ -17,7 +17,7 @@ inputs:
     description: Amend wiki, avoiding spurious commits.
     default: false
   reuse-go:
-    description: Reuse Go as setup by the caller.
+    description: Reuse Go as setup by the caller action.
     default: false
 
 runs:
