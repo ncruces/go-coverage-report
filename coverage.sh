@@ -39,8 +39,11 @@ else
 	COLOR=red
 fi
 
+# Style for the badge.
+STYLE="${INPUT_BADGE_STYLE-}"
+
 # Download the badge.
-curl -s "https://img.shields.io/badge/coverage-$COVERAGE%25-$COLOR" > "$OUTPUT/coverage.svg"
+curl -s "https://img.shields.io/badge/coverage-$COVERAGE%25-$COLOR?style=$STYLE" > "$OUTPUT/coverage.svg"
 
 # Download the chart.
 if [[ "${INPUT_CHART-false}" == "true" ]]; then
