@@ -1,5 +1,5 @@
-name: 'Go coverage report'
-description: 'This action updates adds an HTML coverage report and SVG badge to your wiki'
+name: Go coverage report
+description: This action updates adds an HTML coverage report and SVG badge to your wiki.
 branding:
   color: blue
   icon: award
@@ -24,10 +24,11 @@ inputs:
     default: false
 
 runs:
-  using: "composite"
+  using: composite
   steps:
     - name: Checkout code
       uses: actions/checkout@v3
+      if: inputs.coverage-file != ''
 
     - name: Checkout wiki
       uses: actions/checkout@v3
@@ -57,6 +58,6 @@ runs:
         git diff-index --quiet HEAD && exit
         git config --local user.name  "GitHub Action"
         git config --local user.email "action@github.com"
-        test ${{inputs.amend}} == "true" && \
+        test ${{inputs.amend}} == true   && \
           git commit --amend --no-edit   && git push --force-with-lease || \
           git commit -m"Update coverage" && git push

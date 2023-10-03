@@ -6,7 +6,7 @@ INPUT="${INPUT_COVERAGE-}"
 OUTPUT="$1"
 
 # Get coverage for all packages in the current directory.
-if [ -z $INPUT ]; then
+if [ -z "$INPUT" ]; then
 	INPUT=$(mktemp)
 	go test ./... -coverpkg "$(go list || go list -m | head -1)/..." -coverprofile "$INPUT"
 fi
@@ -52,7 +52,7 @@ if [[ "${INPUT_CHART-false}" == "true" ]]; then
 	jq -csf "$DIR/chart.jq" "$DIR/chart.json" <(
 		tail -n 20 "$OUTPUT/coverage.log" | sed 's/.*/[&]/' | jq -s '.|transpose'
 	) |
-	sed s/\"__GRADIENT__\"/$GRADIENT/ |
+	sed s/\"__GRADIENT__\"/"$GRADIENT"/ |
 	jq -csR '{format:"svg", chart:.}' |
 	curl -sd @- -X POST -H 'Content-Type: application/json' https://quickchart.io/chart > "$OUTPUT/coverage-chart.svg"
 fi
