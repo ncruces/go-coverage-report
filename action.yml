@@ -28,7 +28,9 @@ runs:
   steps:
     - name: Checkout code
       uses: actions/checkout@v3
-      if: inputs.coverage-file != ''
+      if: inputs.coverage-file == ''
+      with:
+        clean: false
 
     - name: Checkout wiki
       uses: actions/checkout@v3
