@@ -48,10 +48,10 @@ Complete example:
 - name: Update coverage report
   uses: ncruces/go-coverage-report@v0
   with:
-    report: 'true'
-    chart: 'true'
-    amend: 'true'
-    reuse-go: 'true'
+    report: true
+    chart: true
+    amend: true
+    reuse-go: true
   if: |
     matrix.os == 'ubuntu-latest' &&
     github.event_name == 'push'  
