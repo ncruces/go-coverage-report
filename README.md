@@ -61,6 +61,9 @@ Complete example:
 The action generates an [HTML report][1], [SVG badge][2] and [chart][4],
 and saves them as “hidden” files in your Wiki.
 
+> [!NOTE]  
+> The [HTML coverage report][1] can't be rendered for private repositories.
+
 To add a coverage badge to your `README.md`, use this Markdown snippet:
 
 ```markdown
