@@ -43,9 +43,11 @@ fi
 
 # Style for the badge.
 STYLE="${INPUT_BADGE_STYLE-}"
+# Title for the badge.
+TITLE="${INPUT_BADGE_TITLE-}"
 
 # Download the badge.
-curl -s "https://img.shields.io/badge/coverage-$COVERAGE%25-$COLOR?style=$STYLE" > "$OUTPUT/coverage.svg"
+curl -s "https://img.shields.io/badge/$(printf %s "$TITLE" | jq -sRr @uri)-$COVERAGE%25-$COLOR?style=$STYLE" > "$OUTPUT/coverage.svg"
 
 # Download the chart.
 if [[ "${INPUT_CHART-false}" == "true" ]]; then
