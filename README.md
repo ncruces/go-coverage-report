@@ -20,6 +20,8 @@ The action has 6 configuration knobs:
   one of: `flat` (default), `flat-square`, `plastic`, `for-the-badge`, `social`.
 - `report`: default `true`,
   generate an [HTML coverage report][1].
+- `report-path`: optional [HTML coverage report][1] output path,
+  default is to generate report to the root of wiki.
 - `chart`: default `false`,
   generate an [SVG coverage chart][4].
 - `amend`: default `false`,

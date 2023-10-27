@@ -5,6 +5,8 @@ DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 INPUT="${INPUT_COVERAGE-}"
 OUTPUT="$1"
 
+mkdir -p "$OUTPUT"
+
 # Get coverage for all packages in the current directory.
 if [ -z "$INPUT" ]; then
 	INPUT=$(mktemp)

@@ -13,6 +13,8 @@ inputs:
   report:
     description: Generate an HTML coverage report.
     default: true
+  report-path:
+    description: Custom path for an HTML coverage report.
   chart:
     description: Generate a coverage over time chart.
     default: false
@@ -50,7 +52,7 @@ runs:
         INPUT_CHART: ${{inputs.chart}}
         INPUT_BADGE_STYLE: ${{inputs.badge-style}}
       run: |
-        ${{github.action_path}}/coverage.sh ./.github/wiki/
+        ${{github.action_path}}/coverage.sh ./.github/wiki/${{inputs.report-path}}
 
     - name: Push to wiki
       shell: bash
