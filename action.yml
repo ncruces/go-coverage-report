@@ -67,5 +67,5 @@ runs:
         git config --local user.name  "GitHub Action"
         git config --local user.email "action@github.com"
         test ${{inputs.amend}} == true   && \
-          git commit --amend --no-edit   && git push --force-with-lease || \
-          git commit -m"Update coverage" && git push
+          git commit --amend --no-edit   && for i in {1..10}; do git push --force-with-lease && c=0 && break || c=$? && git pull --rebase; done; (exit $c) || \
+          git commit -m"Update coverage" && for i in {1..10}; do git push && c=0 && break || c=$? && git pull --rebase; done; (exit $c)
