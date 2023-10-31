@@ -26,6 +26,8 @@ The action has 8 configuration knobs:
   generate an [HTML coverage report][1].
 - `chart`: default `false`,
   generate an [SVG coverage chart][4].
+- `chart-show-diff-only`: default `false`,
+  collapse the same coverage results into single point in the [SVG coverage chart][4].
 - `amend`: default `false`,
   amend your Wiki, avoiding a series of “Update coverage” commits.
 - `reuse-go`: default `false`,

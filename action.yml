@@ -21,6 +21,9 @@ inputs:
   chart:
     description: Generate a coverage over time chart.
     default: false
+  chart-show-diff-only:
+    description: Collapse the same coverage results into single point on the chart.
+    default: false
   amend:
     description: Amend wiki, avoiding spurious commits.
     default: false
@@ -53,6 +56,7 @@ runs:
         INPUT_COVERAGE: ${{inputs.coverage-file}}
         INPUT_REPORT: ${{inputs.report}}
         INPUT_CHART: ${{inputs.chart}}
+        INPUT_CHART_SHOW_DIFF_ONLY: ${{inputs.chart-show-diff-only}}
         INPUT_BADGE_STYLE: ${{inputs.badge-style}}
         INPUT_BADGE_TITLE: ${{inputs.badge-title}}
       run: |

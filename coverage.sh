@@ -53,8 +53,13 @@ curl -s "https://img.shields.io/badge/$(printf %s "$TITLE" | jq -sRr @uri)-$COVE
 if [[ "${INPUT_CHART-false}" == "true" ]]; then
 	GRADIENT='getGradientFillHelper("vertical",["#44CC11","#97CA00","#A4A61D","#DFB317","#FE7D37","#E05D44"])'
 
+	coverageLog=$(cat "$OUTPUT/coverage.log")
+	if [[ "${INPUT_CHART_SHOW_DIFF_ONLY-false}" == "true" ]]; then
+		# collapse equal results, but save first and last points
+		coverageLog=$(echo "$coverageLog" | awk -F ',' '{ if (NR==1 || $2 != prev) { print; prev = $2 } } END { print }')
+	fi
 	jq -csf "$DIR/chart.jq" "$DIR/chart.json" <(
-		tail -n 20 "$OUTPUT/coverage.log" | sed 's/.*/[&]/' | jq -s '.|transpose'
+		echo "$coverageLog" | tail -n 20 | sed 's/.*/[&]/' | jq -s '.|transpose'
 	) |
 	sed s/\"__GRADIENT__\"/"$GRADIENT"/ |
 	jq -csR '{format:"svg", chart:.}' |
