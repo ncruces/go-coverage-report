@@ -23,9 +23,6 @@ COVERAGE=$(go tool cover -func="$INPUT" | tail -1 | grep -Eo '[0-9]+\.[0-9]')
 
 echo "coverage: $COVERAGE% of statements"
 
-date "+%s,$COVERAGE" >> "$OUTPUT/coverage.log"
-sort -u -o "$OUTPUT/coverage.log" "$OUTPUT/coverage.log"
-
 # Pick a color for the badge.
 if awk "BEGIN {exit !($COVERAGE >= 90)}"; then
 	COLOR=brightgreen
@@ -51,6 +48,20 @@ curl -s "https://img.shields.io/badge/$(printf %s "$TITLE" | jq -sRr @uri)-$COVE
 
 # Download the chart.
 if [[ "${INPUT_CHART-false}" == "true" ]]; then
+	# Add record.
+	date "+%s,$COVERAGE" >> "$OUTPUT/coverage.log"
+
+	LOG=$(mktemp)
+	# Sort by date, remove duplicates.
+	sort -u "$OUTPUT/coverage.log" > "$LOG"
+	# Collapse spans with similar coverage.
+	awk -F, '{ if (NR==1 || $2 != prev) { print; prev = $2 } } END { print }' "$LOG" > "$OUTPUT/coverage.log"
+
+	if [[ $(wc -l < "$OUTPUT/coverage.log") -le 2 ]]; then
+		echo Insufficient records for coverage chart.
+		exit
+	fi
+
 	GRADIENT='getGradientFillHelper("vertical",["#44CC11","#97CA00","#A4A61D","#DFB317","#FE7D37","#E05D44"])'
 
 	jq -csf "$DIR/chart.jq" "$DIR/chart.json" <(
