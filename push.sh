@@ -8,14 +8,18 @@ git add --all
 # Exit if no changes.
 git diff-index --quiet HEAD && exit
 
-git config --local user.name  "GitHub Action"
-git config --local user.email "action@github.com"
+# https://github.com/orgs/community/discussions/26560
+git config --local user.name  "github-actions[bot]"
+git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
+# Amend the wiki, fails-safe with concurrent modifications.
 if [[ "${INPUT_AMEND-true}" == "true" ]]; then
   git commit --amend --no-edit
-else
-  git commit -m"Update coverage"
+  git push --force-with-lease
+  exit
 fi
+
+git commit -m "Update coverage"
 
 # Push to wiki, retrying up to 10 times.
 for _ in {1..10}; do
