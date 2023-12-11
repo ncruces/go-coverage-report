@@ -28,9 +28,6 @@ The action has 8 configuration knobs:
   generate an [SVG coverage chart][4].
 - `amend`: default `false`,
   amend your Wiki, avoiding a series of “Update coverage” commits.
-- `reuse-go`: default `false`,
-  reuse Go as setup by the caller action
-  (for performance, caching, configurability).
 
 Also, consider:
 - running this step _after_ your tests run
@@ -55,7 +52,6 @@ Complete example:
     report: true
     chart: true
     amend: true
-    reuse-go: true
   if: |
     matrix.os == 'ubuntu-latest' &&
     github.event_name == 'push'  
