@@ -26,6 +26,9 @@ inputs:
     default: false
   reuse-go:
     deprecationMessage: Go install is always reused.
+  project-directory:
+    description: Directory where go test ./... should be run.
+    default: .
 
 runs:
   using: composite
@@ -50,6 +53,7 @@ runs:
         INPUT_CHART: ${{inputs.chart}}
         INPUT_BADGE_STYLE: ${{inputs.badge-style}}
         INPUT_BADGE_TITLE: ${{inputs.badge-title}}
+        PROJECT_DIRECTORY: ${{inputs.project-directory}}
       run: |
         ${{github.action_path}}/coverage.sh ./.github/wiki/${{inputs.output-dir}}
 
