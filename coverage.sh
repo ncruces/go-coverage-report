@@ -10,6 +10,11 @@ OUTPUT_ABS="$CURRENT_DIR/$OUTPUT"
 
 mkdir -p "$OUTPUT_ABS"
 
+# Change to the project directory if specified.
+if [ -n "$PROJECT_DIRECTORY" ]; then
+	cd "$PROJECT_DIRECTORY"
+fi
+
 # Get coverage for all packages in the current directory.
 if [ -z "$INPUT" ]; then
 	INPUT=$(mktemp)
