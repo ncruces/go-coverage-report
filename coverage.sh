@@ -3,7 +3,8 @@ set -euo pipefail
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 INPUT="${INPUT_COVERAGE-}"
-OUTPUT="$1"
+OUTPUT="$(pwd)/$1"
+INPUT_BASE_DIR="${INPUT_BASE_DIR-}"
 
 mkdir -p "$OUTPUT"
 
@@ -15,7 +16,7 @@ fi
 
 # Create an HTML report.
 if [[ "${INPUT_REPORT-true}" == "true" ]]; then
-	go tool cover -html="$INPUT" -o "$OUTPUT/coverage.html"
+	cd $INPUT_BASE_DIR && go tool cover -html="$INPUT" -o "$OUTPUT/coverage.html"
 fi
 
 # Extract total coverage: the decimal number from the last line of the function report.

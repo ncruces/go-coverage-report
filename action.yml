@@ -26,6 +26,9 @@ inputs:
     default: false
   reuse-go:
     deprecationMessage: Go install is always reused.
+  base-dir:
+    description: base directory within which to run `go tool cover`
+    default: .
 
 runs:
   using: composite
@@ -34,7 +37,7 @@ runs:
       uses: actions/checkout@v4
       if: |
         hashFiles('.github') == '' &&
-        inputs.coverage-file == ''        
+        inputs.coverage-file == ''
 
     - name: Checkout wiki
       uses: actions/checkout@v4
@@ -50,6 +53,7 @@ runs:
         INPUT_CHART: ${{inputs.chart}}
         INPUT_BADGE_STYLE: ${{inputs.badge-style}}
         INPUT_BADGE_TITLE: ${{inputs.badge-title}}
+        INPUT_BASE_DIR: ${{inputs.base-dir}}
       run: |
         ${{github.action_path}}/coverage.sh ./.github/wiki/${{inputs.output-dir}}
 

@@ -28,6 +28,8 @@ The action has 8 configuration knobs:
   generate an [SVG coverage chart][4].
 - `amend`: default `false`,
   amend your Wiki, avoiding a series of “Update coverage” commits.
+- `base-dir`: default `.`,
+  base directory within which to run `go tool cover`
 
 Also, consider:
 - running this step _after_ your tests run
