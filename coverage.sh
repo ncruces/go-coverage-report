@@ -1,11 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-INPUT="${INPUT_COVERAGE-}"
-OUTPUT="$1"
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+OUTPUT_DIR=$(mkdir -p "$1" && cd "$1" && pwd)
 
-mkdir -p "$OUTPUT"
+# Change to module directory.
+cd "${INPUT_MODULE-.}"
+
+# Input file.
+INPUT="${INPUT_COVERAGE-}"
 
 # Get coverage for all packages in the current directory.
 if [ -z "$INPUT" ]; then
@@ -15,7 +18,7 @@ fi
 
 # Create an HTML report.
 if [[ "${INPUT_REPORT-true}" == "true" ]]; then
-	go tool cover -html="$INPUT" -o "$OUTPUT/coverage.html"
+	go tool cover -html="$INPUT" -o "$OUTPUT_DIR/coverage.html"
 fi
 
 # Extract total coverage: the decimal number from the last line of the function report.
@@ -38,36 +41,39 @@ else
 	COLOR=red
 fi
 
+# Change to output directory.
+cd "$OUTPUT_DIR"
+
 # Style for the badge.
 STYLE="${INPUT_BADGE_STYLE-}"
 # Title for the badge.
 TITLE="${INPUT_BADGE_TITLE-}"
 
 # Download the badge.
-curl -s "https://img.shields.io/badge/$(printf %s "$TITLE" | jq -sRr @uri)-$COVERAGE%25-$COLOR?style=$STYLE" > "$OUTPUT/coverage.svg"
+curl -s "https://img.shields.io/badge/$(printf %s "$TITLE" | jq -sRr @uri)-$COVERAGE%25-$COLOR?style=$STYLE" > coverage.svg
 
 # Download the chart.
 if [[ "${INPUT_CHART-false}" == "true" ]]; then
 	# Add record.
-	date "+%s,$COVERAGE" >> "$OUTPUT/coverage.log"
+	date "+%s,$COVERAGE" >> coverage.log
 
 	LOG=$(mktemp)
 	# Sort by date, remove duplicates.
-	sort -u "$OUTPUT/coverage.log" > "$LOG"
+	sort -u coverage.log > "$LOG"
 	# Collapse spans with similar coverage.
-	awk -F, '{ if (NR==1 || $2 != prev) { print; prev = $2 } } END { print }' "$LOG" > "$OUTPUT/coverage.log"
+	awk -F, '{ if (NR==1 || $2 != prev) { print; prev = $2 } } END { print }' "$LOG" > coverage.log
 
-	if [[ $(wc -l < "$OUTPUT/coverage.log") -le 2 ]]; then
+	if [[ $(wc -l < coverage.log) -le 2 ]]; then
 		echo Insufficient records for coverage chart.
 		exit
 	fi
 
 	GRADIENT='getGradientFillHelper("vertical",["#44CC11","#97CA00","#A4A61D","#DFB317","#FE7D37","#E05D44"])'
 
-	jq -csf "$DIR/chart.jq" "$DIR/chart.json" <(
-		tail -n 20 "$OUTPUT/coverage.log" | sed 's/.*/[&]/' | jq -s '.|transpose'
+	jq -csf "$SCRIPT_DIR/chart.jq" "$SCRIPT_DIR/chart.json" <(
+		tail -n 20 coverage.log | sed 's/.*/[&]/' | jq -s '.|transpose'
 	) |
 	sed s/\"__GRADIENT__\"/"$GRADIENT"/ |
 	jq -csR '{format:"svg", chart:.}' |
-	curl -sd @- -X POST -H 'Content-Type: application/json' https://quickchart.io/chart > "$OUTPUT/coverage-chart.svg"
+	curl -sd @- -X POST -H 'Content-Type: application/json' https://quickchart.io/chart > coverage-chart.svg
 fi
