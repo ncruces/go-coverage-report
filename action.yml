@@ -53,6 +53,7 @@ runs:
         INPUT_CHART: ${{inputs.chart}}
         INPUT_BADGE_STYLE: ${{inputs.badge-style}}
         INPUT_BADGE_TITLE: ${{inputs.badge-title}}
+        INPUT_TAGS: ${{inputs.tags}}
       run: |
         ${{github.action_path}}/coverage.sh ./.github/wiki/${{inputs.output-dir}}
 

@@ -28,6 +28,8 @@ The action has 8 configuration knobs:
   generate an [SVG coverage chart][4].
 - `amend`: default `false`,
   amend your Wiki, avoiding a series of “Update coverage” commits.
+- `tags`: default empty,
+  add tags to the test coverage run
 
 Also, consider:
 - running this step _after_ your tests run

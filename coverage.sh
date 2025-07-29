@@ -13,7 +13,7 @@ INPUT="${INPUT_COVERAGE-}"
 # Get coverage for all packages in the current directory.
 if [ -z "$INPUT" ]; then
 	INPUT=$(mktemp)
-	go test ./... -coverpkg "$(go list || go list -m | head -1)/..." -coverprofile "$INPUT"
+    go test ./... -coverpkg "$(go list || go list -m | head -1)/..." -coverprofile "$INPUT" -tags "${INPUT_TAGS-}"
 fi
 
 # Create an HTML report.
