@@ -28,6 +28,8 @@ The action has 8 configuration knobs:
   generate an [SVG coverage chart][4].
 - `amend`: default `false`,
   amend your Wiki, avoiding a series of “Update coverage” commits.
+- `build-tags`: Go build tags to consider satisfied	during the build;
+  default is to pass none to the compiler.
 
 Also, consider:
 - running this step _after_ your tests run

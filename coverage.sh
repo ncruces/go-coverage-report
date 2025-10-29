@@ -7,13 +7,20 @@ OUTPUT_DIR=$(mkdir -p "$1" && cd "$1" && pwd)
 # Change to module directory.
 cd "${INPUT_MODULE-.}"
 
+# Go build tags
+TAGS=( )
+if [ -n "${INPUT_BUILD_TAGS-}" ]; then
+	TAGS=( "-tags ${INPUT_BUILD_TAGS}" )
+fi
+
+
 # Input file.
 INPUT="${INPUT_COVERAGE-}"
 
 # Get coverage for all packages in the current directory.
 if [ -z "$INPUT" ]; then
 	INPUT=$(mktemp)
-	go test ./... -coverpkg "$(go list || go list -m | head -1)/..." -coverprofile "$INPUT"
+	go test ./... -coverpkg "$(go list || go list -m | head -1)/..." -coverprofile "$INPUT" ${TAGS[@]}
 fi
 
 # Create an HTML report.

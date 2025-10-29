@@ -26,6 +26,8 @@ inputs:
   amend:
     description: Amend wiki, avoiding spurious commits.
     default: false
+  build-tags:
+    description: Go build tags to consider satisfied	during the build
   reuse-go:
     deprecationMessage: Go install is always reused.
 
@@ -53,6 +55,7 @@ runs:
         INPUT_CHART: ${{inputs.chart}}
         INPUT_BADGE_STYLE: ${{inputs.badge-style}}
         INPUT_BADGE_TITLE: ${{inputs.badge-title}}
+        INPUT_BUILD_TAGS: ${{inputs.build-tags}}
       run: |
         ${{github.action_path}}/coverage.sh ./.github/wiki/${{inputs.output-dir}}
 
