@@ -15,6 +15,8 @@ and workflows need to have read _and_ write permissions to the repo.
 The action has 8 configuration knobs:
 - `coverage-file`: optional coverage input file;
   default is to generate coverage for all packages in the current module.
+- `module-dir`: The module root directory, containing the go.mod file. By
+  default, the repository's root directory.
 - `output-dir`: optional output directory for the for the badge, report, chart;
   default is to generate files to the root of wiki.
 - `badge-style`: optional coverage badge style,
