@@ -5,7 +5,7 @@ SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 OUTPUT_DIR=$(mkdir -p "$1" && cd "$1" && pwd)
 
 # Change to module directory.
-cd "${INPUT_MODULE-.}"
+cd "${INPUT_MODULE:-.}"
 
 # Input file.
 INPUT="${INPUT_COVERAGE-}"
